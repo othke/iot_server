@@ -1,12 +1,14 @@
 'use strict';
+var redis_service = require('../services/redis_service');
+var redis = require('redis');
 
 exports.messagesPOST = function(args, res, next) {
   /**
    * parameters expected in the args:
   * message (Message)
   **/
-  // no response value expected for this operation
-  
+  var message = args.message.value;
+  redis_service.requestAddMessage(message);
   
   res.end();
 }
