@@ -5,6 +5,7 @@ var http = require('http');
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var fs = require('fs');
+var conf = require('./conf');
 var serverPort = 8080;
 
 // swaggerRouter configuration
@@ -13,6 +14,10 @@ var options = {
   controllers: './controllers',
   useStubs: process.env.NODE_ENV === 'development' ? true : false // Conditionally turn on stubs (mock mode)
 };
+
+// Set redis env
+process.env.REDIS_HOST = conf.REDIS_HOST;
+process.env.REDIS_PORT = conf.REDIS_PORT;
 
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
 var spec = fs.readFileSync('./api/swagger.yaml', 'utf8');

@@ -1,6 +1,5 @@
 'use strict';
 var redis_service = require('../services/redis_service');
-var redis = require('redis');
 
 exports.messagesPOST = function(args, res, next) {
   /**

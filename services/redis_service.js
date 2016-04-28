@@ -10,7 +10,7 @@ var redis = require('redis');
 var TIMETABLE = "timetable";
 
 // Start services client
-var client = redis.createClient('6379', '192.168.99.100');
+var client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
 
 var redisService = {};
 
