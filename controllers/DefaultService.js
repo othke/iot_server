@@ -9,13 +9,15 @@ exports.messagesPOST = function(args, res, next) {
   **/
   // Get the message and call redis
   var message = args.message.value;
+  
   redis_service.requestAddMessage(message)
       .then(function(message){
-        console.log("success save")
+        console.log("success save message");
+        console.log(message)
         res.end();
       })
       .catch(function(error){
-        console.log("error save")
+        console.log(error)
         res.end();
       })
   

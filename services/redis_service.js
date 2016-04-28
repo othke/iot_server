@@ -14,6 +14,44 @@ var client = redis.createClient('6379', '192.168.99.100');
 
 var redisService = {};
 
+
+redisService.validMessage = function(message){
+    return new Promise(function(resolve, reject){
+
+        // Check properties
+        var isValid = true;
+        var prop = "";
+        var props = [
+            {name: 'id', type: 'string'},
+            {name: 'timestamp', type: 'string'},
+            {name: 'sensorType', type: 'number'},
+            {name: 'value', type: 'number'}
+        ]
+
+        for(var i = 0; i < props.length; i++){
+            // Check property name
+            if (! message.hasOwnProperty(props[i].name)){
+                isValid = false;
+                prop = props[i].name;
+                break;
+            }
+            // Check property type
+            if ( typeof message[props[i].name] != props[i].type ){
+                isValid = false;
+                break;
+            }
+            
+            // Return promise
+            if(! isValid){
+                reject(new Error("error with property " + prop));
+            }
+            else{
+                resolve(message);
+            }
+        }
+    });
+}
+
 /**
  * Get id request
  * @param message
@@ -26,8 +64,6 @@ redisService.getIdRequest = function(message){
                 reject(error);
             }
             else{
-                // console.log("request id: " + incr);
-                // console.log(message);
                 resolve(message);
             }
         })
@@ -71,7 +107,6 @@ redisService.addMessageIdInTimetable = function(message){
     return new Promise(function(resolve, reject){
         client.zadd(TIMETABLE, Date.parse(message.timestamp), message.id, function(error, result){
             if(error){
-                // Error in request
                 reject(error);
             }
             else{
@@ -90,7 +125,6 @@ redisService.addMessage = function(message){
   return new Promise(function(resolve, reject){
         client.hmset(message.id, message, function(error, result){
             if(error){
-                // Error in request
                 reject(error);
             }
             else{
@@ -108,6 +142,10 @@ redisService.requestAddMessage = function(message){
     return new Promise(function (resolve, reject){
 
         redisService.getIdRequest(message)
+        // Check message validity
+        .then(function(message){
+            return redisService.validMessage(message);
+        })
         // Check id message is not set
         .then(function(message){
             return redisService.unsetId(message);
