@@ -19,8 +19,6 @@ exports.messagesPOST = function(args, res, next) {
         console.log(error)
         res.end();
       })
-  
-  res.end();
 }
 
 exports.messagesSynthesisGET = function(args, res, next) {
