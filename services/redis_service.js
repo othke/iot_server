@@ -104,30 +104,30 @@ redisService.addMessage = function(message){
  * Make all the process for add request
  */
 redisService.requestAddMessage = function(message){
-    redisService.getIdRequest(message)
 
-    // Check id message is not set
-    .then(function(message){
-        return redisService.unsetId(message);
-    })
+    return new Promise(function (resolve, reject){
 
-    // Add the id in the timetable
-    .then(function(message){
-        return redisService.addMessageIdInTimetable(message);
-    })
-
-    // Add the message in the db
-    .then(function(message){
-        return redisService.addMessage(message);
-    })
-
-    .then(function(message){
-        console.log("request save");
-    })
-
-    // Catch error
-    .catch(function(error){
-        console.log(error);
+        redisService.getIdRequest(message)
+        // Check id message is not set
+        .then(function(message){
+            return redisService.unsetId(message);
+        })
+        // Add the id in the timetable
+        .then(function(message){
+            return redisService.addMessageIdInTimetable(message);
+        })
+        // Add the message in the db
+        .then(function(message){
+            return redisService.addMessage(message);
+        })
+        // Success Add message
+        .then(function(message){
+            resolve(message)
+        })
+        // Catch error
+        .catch(function(error){
+            reject(error)
+        });
     });
 };
 

@@ -7,8 +7,17 @@ exports.messagesPOST = function(args, res, next) {
    * parameters expected in the args:
   * message (Message)
   **/
+  // Get the message and call redis
   var message = args.message.value;
-  redis_service.requestAddMessage(message);
+  redis_service.requestAddMessage(message)
+      .then(function(message){
+        console.log("success save")
+        res.end();
+      })
+      .catch(function(error){
+        console.log("error save")
+        res.end();
+      })
   
   res.end();
 }
