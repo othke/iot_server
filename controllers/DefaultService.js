@@ -26,7 +26,7 @@ exports.messagesSynthesisGET = function(args, res, next) {
    * parameters expected in the args:
   **/
   
-  
+  redis_service.synthesisMessage();
   var examples = {};
   examples['application/json'] = [ {
   "minValue" : 123456789,
