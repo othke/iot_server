@@ -12,11 +12,11 @@ exports.messagesPOST = function(args, res, next) {
   redis_service.requestAddMessage(message)
       .then(function(message){
         console.log("success save message");
-        console.log(message)
+        console.log(message);
         res.end();
       })
       .catch(function(error){
-        console.log(error)
+        console.log(error);
         res.end();
       })
 }
@@ -26,23 +26,12 @@ exports.messagesSynthesisGET = function(args, res, next) {
    * parameters expected in the args:
   **/
   
-  redis_service.synthesisMessage();
-  var examples = {};
-  examples['application/json'] = [ {
-  "minValue" : 123456789,
-  "maxValue" : 123456789,
-  "sensorType" : 123,
-  "mediumValue" : 123456789
-} ];
-  
-  if(Object.keys(examples).length > 0) {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
-  }
-  else {
-    res.end();
-  }
-  
-  
+  redis_service.synthesisMessage()
+  	.then(function(response){
+  		res.end(JSON.stringify(response));
+  	})
+  	.catch(function(error){
+  		res.end();
+  	});  
 }
 

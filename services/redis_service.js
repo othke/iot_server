@@ -5,6 +5,7 @@
 var shortid = require('shortid');
 var dateformat = require('dateformat');
 var redis = require('redis');
+var math = require('mathjs');
 
 // constant time table name
 var TIMETABLE = "timetable";
@@ -170,20 +171,34 @@ redisService.requestAddMessage = function(message){
 };
 
 redisService.synthesisMessage = function(){
-	redisService.zrangebyscore()
-	
-	.then(function(obj){
-		return redisService.getMessageById(obj);
-	})
-	
-	.then(function(obj){
-		return redisService.synthesis(obj);
-	});
+    return new Promise(function (resolve, reject){
+		redisService.zrangebyscore()
+		
+		.then(function(obj){
+			return redisService.getMessageById(obj);
+		})
+		
+		.then(function(obj){
+			return redisService.synthesis(obj);
+		})
+		
+		// Success synthesis message
+        .then(function(obj){
+            resolve(obj);
+        })
+        
+	    // Catch error
+	    .catch(function(error){
+	        reject(error);
+	    });
+    });
+		
 }
 
 redisService.synthesis = function(obj){
 	return new Promise(function(resolve,reject){
 		var synthesis = new Object();
+		var synthesisSerialize = new Array();
 		
 		for(var i = 0; i < obj.length; i++){
 			var sensorId = obj[i].sensorType;
@@ -197,7 +212,22 @@ redisService.synthesis = function(obj){
 				synthesis[sensorId] = values;
 			}
 		}
-		console.log(synthesis);
+		
+		for(var sensor in synthesis){
+			var key = parseInt(sensor);
+			var value = synthesis[sensor];
+
+			var json = {
+				  "minValue" : math.min(value),
+				  "maxValue" : math.max(value),
+				  "sensorType" : key,
+				  "mediumValue" : math.mean(value)
+			}			
+			synthesisSerialize.push(json);
+		}
+		
+		resolve(synthesisSerialize);
+		
 	});
 }
 
