@@ -28,6 +28,7 @@ exports.messagesSynthesisGET = function(args, res, next) {
   
   redis_service.synthesisMessage()
   	.then(function(response){
+        res.setHeader('Content-Type', 'application/json');
   		res.end(JSON.stringify(response));
   	})
   	.catch(function(error){
