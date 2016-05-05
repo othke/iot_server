@@ -5,6 +5,7 @@
 var shortid = require('shortid');
 var dateformat = require('dateformat');
 var redis = require('redis');
+var math = require('mathjs');
 
 // constant time table name
 var TIMETABLE = "timetable";
@@ -168,6 +169,103 @@ redisService.requestAddMessage = function(message){
         });
     });
 };
+
+redisService.synthesisMessage = function(){
+    return new Promise(function (resolve, reject){
+		redisService.zrangebyscore()
+		
+		.then(function(obj){
+			return redisService.getMessageById(obj);
+		})
+		
+		.then(function(obj){
+			return redisService.synthesis(obj);
+		})
+		
+		// Success synthesis message
+        .then(function(obj){
+            resolve(obj);
+        })
+        
+	    // Catch error
+	    .catch(function(error){
+	        reject(error);
+	    });
+    });
+		
+}
+
+redisService.synthesis = function(obj){
+	return new Promise(function(resolve,reject){
+		var synthesis = new Object();
+		var synthesisSerialize = new Array();
+		
+		for(var i = 0; i < obj.length; i++){
+			var sensorId = obj[i].sensorType;
+			var value = parseInt(obj[i].value);
+			
+			if(Array.isArray(synthesis[sensorId])){
+				synthesis[sensorId].push(value);
+			} else {	
+				var values = new Array();
+				values.push(value);
+				synthesis[sensorId] = values;
+			}
+		}
+		
+		for(var sensor in synthesis){
+			var key = parseInt(sensor);
+			var value = synthesis[sensor];
+
+			var json = {
+				  "minValue" : math.min(value),
+				  "maxValue" : math.max(value),
+				  "sensorType" : key,
+				  "mediumValue" : math.mean(value)
+			}			
+			synthesisSerialize.push(json);
+		}
+		
+		resolve(synthesisSerialize);
+		
+	});
+}
+
+redisService.getMessageById = function(obj){
+	return new Promise(function(resolve,reject){
+		var array = new Array();
+		for(var i = 0; i < obj.length; i++){		
+			var tempArray = new Array();
+			tempArray.push("hgetall");
+			tempArray.push(obj[i]);
+			array.push(tempArray);
+		} 	
+		
+		client.multi(array)
+		.exec(function (err, replies) {
+			if(err){
+				reject(err);
+			} else {
+				resolve(replies);
+			}
+		});
+	});
+}
+
+redisService.zrangebyscore = function(){	
+	var time = new Date().getTime() - 60*60*1000;	
+	return new Promise(function(resolve,reject){		
+		var args = ['timetable', '+inf', time];		
+		client.zrevrangebyscore(args, function(err,obj){
+			if(err){
+				reject(err);
+			} else {
+				resolve(obj);
+			}			
+		});
+	});
+}
+
 
 module.exports = redisService;
 
