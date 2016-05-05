@@ -9,8 +9,8 @@ var redis = require('redis');
 // constant time table name
 var TIMETABLE = "timetable";
 
-// Start services client
-var client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
+// Get redis client
+var client = require('../connection');
 
 var redisService = {};
 
