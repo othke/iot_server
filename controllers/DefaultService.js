@@ -8,13 +8,13 @@ exports.messagesPOST = function(args, res, next) {
   **/
   // Get the message and call redis
   var message = args.message.value;
-  var start = Date.now();
+  // var start = Date.now();
   redis_service.requestAddMessage(message)
       .then(function(message){
         res.end();
-        var end = Date.now();
-        var delta = (end - start) / 1000;
-        console.log(delta + " secondes")
+        // var end = Date.now();
+        // var delta = (end - start) / 1000;
+        // console.log(delta + " secondes")
       })
       .catch(function(error){
         console.log(error);

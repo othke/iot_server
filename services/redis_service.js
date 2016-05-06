@@ -65,6 +65,9 @@ redisService.getIdRequest = function(message){
                 reject(error);
             }
             else{
+                if( incr % 1000 == 0){
+                    console.log(incr)
+                }
                 resolve(message);
             }
         })
