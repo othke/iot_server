@@ -212,7 +212,8 @@ redisService.synthesis = function(obj){
 				synthesis[sensorId] = values;
 			}
 		}
-		
+
+        //TODO: make parallel
 		for(var sensor in synthesis){
 			var key = parseInt(sensor);
 			var value = synthesis[sensor];
