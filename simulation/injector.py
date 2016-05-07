@@ -35,35 +35,39 @@ def request(message):
     """
     Make request
     """
-    url = 'http://localhost:8080/messages/'
+    r = random.random()
+    url = 'http://192.168.1.14/messages/'
+
     jsondata = json.dumps(message)
     jsondataasbytes = jsondata.encode('utf-8')
     req = urllib2.Request(url, jsondata)
     req.add_header('Content-Type', 'application/json')
     result = urllib2.urlopen(req)
+    # print message['id']
 
 
 def main():
     """
     Main process
     """
-    start = datetime.now()
+
     # Prepare x messages
-    X = 100000
-    messages = []
+    X = 50000
+    messages= []
     for i in range(X):
-        messages.append(random_message())
+        message = random_message()
+        message['id'] = 'id' + str(i)
+        messages.append(message)
 
     # Make multiprocessing request
     pool = multiprocessing.Pool(2)
+    start = datetime.now()
     pool.map(request, messages)
     pool.close()
     pool.join()
     end = datetime.now()
     delta = end - start
     print delta
-
-
 
 if __name__ == '__main__':
     main()
