@@ -35,15 +35,12 @@ def request(message):
     """
     Make request
     """
-    r = random.random()
-    url = 'http://192.168.1.14/messages/'
-
+    url = 'http://localhost:8080/messages/'
     jsondata = json.dumps(message)
     jsondataasbytes = jsondata.encode('utf-8')
     req = urllib2.Request(url, jsondata)
     req.add_header('Content-Type', 'application/json')
     result = urllib2.urlopen(req)
-    # print message['id']
 
 
 def main():
