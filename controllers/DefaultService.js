@@ -1,5 +1,4 @@
 'use strict';
-var redis_service = require('../services/redis_service');
 var mongo_service = require('../services/mongo_service');
 
 
