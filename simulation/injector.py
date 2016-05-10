@@ -35,7 +35,7 @@ def request(message):
     """
     Make request
     """
-    url = 'http://localhost:8080/messages/'
+    url = 'http://192.168.0.11/messages/'
     jsondata = json.dumps(message)
     jsondataasbytes = jsondata.encode('utf-8')
     req = urllib2.Request(url, jsondata)
