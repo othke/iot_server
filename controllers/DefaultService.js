@@ -25,6 +25,14 @@ exports.messagesSynthesisGET = function(args, res, next) {
     /**
      * parameters expected in the args:
      **/
-    res.end();
+	mongo_service.getSynthesis()
+	.then(function(result){
+		res.statusCode = 200;
+		res.end(JSON.stringify(result));
+	})
+    .catch(function(error){
+        res.statusCode = 500;
+        res.end()
+    })
 }   
 
