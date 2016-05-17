@@ -21,11 +21,9 @@ sudo apt-get mongodb-server -y
 ###################################
 # Initialize mongo db
 ###################################
-mongo
-use hackathon
-db.runCommand( { create: "messages"} );
-db.messages.createIndex({ id: 1 }, {unique:true});
-db.messages.dropIndex("_id_");
+mongo hackathon --eval "db.runCommand({create:'messages'});"
+mongo hackathon --eval "db.messages.createIndex({ id: 1 }, {unique:true});"
+mongo hackathon --eval "db.messages.dropIndex('_id_');"
 
 ###################################
 # Install nodejs
