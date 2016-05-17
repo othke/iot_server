@@ -6,12 +6,8 @@ var http = require('http');
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var fs = require('fs');
+// var serverPort = process.env.NODE_PORT;
 var serverPort = 8080;
-
-// Set Redis conf
-var conf = require('./conf');
-process.env.REDIS_HOST = conf.REDIS_HOST;
-process.env.REDIS_PORT = conf.REDIS_PORT;
 
 // swaggerRouter configuration
 var options = {
@@ -39,21 +35,10 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   // Serve the Swagger documents and Swagger UI
   app.use(middleware.swaggerUi());
 
+  // Start the server
+  http.createServer(app).listen(serverPort, function () {
+    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
+  });
 
-  // Start Redis instance
-  var redis_connection = require('./connection');
-  redis_connection.on('error', function(err){
-    console.log('cannot start redis with: ' + conf.REDIS_HOST + ":" + conf.REDIS_PORT);
-    process.exit();
-  })
-
-  redis_connection.on('ready', function(){
-    console.log('start redis with: ' + conf.REDIS_HOST + ":" + conf.REDIS_PORT);
-      // Start the server
-      http.createServer(app).listen(serverPort, function () {
-        console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-        console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
-      });
-  })
-  
 });

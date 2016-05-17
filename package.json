@@ -12,9 +12,8 @@
     "connect": "^3.2.0",
     "dateformat": "^1.0.12",
     "js-yaml": "^3.3.0",
-    "mathjs": "^3.2.1",
-    "redis": "^2.6.0-1",
-    "shortid": "^2.2.6",
+    "mongodb": "^2.1.18",
+    "recluster": "^0.4.5",
     "swagger-tools": "0.9.*"
   }
 }
