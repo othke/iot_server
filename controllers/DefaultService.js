@@ -28,7 +28,7 @@ exports.messagesSynthesisGET = function(args, res, next) {
 	mongo_service.getSynthesis()
 	.then(function(result){
 		res.statusCode = 200;
-		res.end(JSON.stringify(result));
+		res.end(result);
 	})
     .catch(function(error){
         res.statusCode = 500;

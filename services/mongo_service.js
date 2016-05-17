@@ -84,15 +84,17 @@ mongoService.serializeSynthesis = function(db){
     	      }},
     	      { "$group": {
     	    	   _id:"$sensorType", 
-    	    	   count:{$sum:1}, 
-    	    	   max:{$max:"$value"}, 
-    	    	   min:{$min:"$value"}
+    	    	   minValue:{$min:"$value"},
+    	    	   maxValue:{$max:"$value"},
+    	    	   mediumValue:{$avg:"$value"}
     	      }}
     	], function (err, result){
     		if (err) {
     			reject(err);
     		} else {
-    			resolve(result);
+    			var str = JSON.stringify(result);
+    			str = str.replace(/_id/g, 'sensorType');
+    			resolve(str);
     		}
     	})
     })
