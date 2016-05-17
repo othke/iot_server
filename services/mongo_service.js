@@ -49,4 +49,55 @@ mongoService.insertMessage = function(db, message){
     })
 }
 
+mongoService.getSynthesis = function(){
+	return new Promise(function(resolve, reject){		
+		
+        // Get mongodb connection singleton
+        mongoDbConnection()
+              
+            .then(function(db){
+                return mongoService.serializeSynthesis(db);
+            })
+            // Insert success
+            .then(function(result){
+                resolve(result);
+            })
+            // Insert error
+            .catch(function(error){
+                reject(error);
+            })
+	});
+}
+
+mongoService.serializeSynthesis = function(db){
+    return new Promise(function(resolve, reject){
+    	
+    	var timeStamp = new Date().getTime();
+    	var minutes = 60;
+    	var timeStampDelta = new Date(timeStamp - minutes*60000);
+
+    	db.collection('messages').aggregate([
+    	      { $match: {
+    	    	  timestamp: {
+    	    		  $gte: timeStampDelta
+    	    	  }
+    	      }},
+    	      { "$group": {
+    	    	   _id:"$sensorType", 
+    	    	   minValue:{$min:"$value"},
+    	    	   maxValue:{$max:"$value"},
+    	    	   mediumValue:{$avg:"$value"}
+    	      }}
+    	], function (err, result){
+    		if (err) {
+    			reject(err);
+    		} else {
+    			var str = JSON.stringify(result);
+    			str = str.replace(/_id/g, 'sensorType');
+    			resolve(str);
+    		}
+    	})
+    })
+}
+
 module.exports = mongoService;
