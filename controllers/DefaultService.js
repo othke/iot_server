@@ -15,7 +15,7 @@ exports.messagesPOST = function(args, res, next) {
             res.end();
         })
         .catch(function(error){
-            console.log(error);
+            // console.log(error);
             res.statusCode = 500;
             res.end()
         })

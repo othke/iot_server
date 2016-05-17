@@ -35,12 +35,15 @@ def request(message):
     """
     Make request
     """
-    url = 'http://192.168.0.11/messages/'
-    jsondata = json.dumps(message)
-    jsondataasbytes = jsondata.encode('utf-8')
-    req = urllib2.Request(url, jsondata)
-    req.add_header('Content-Type', 'application/json')
+    start = datetime.now()
+    url = 'http://192.168.0.16:8000'
+
+    req = urllib2.Request(url)
+    # req.add_header('Content-Type', 'application/json')
     result = urllib2.urlopen(req)
+    end = datetime.now()
+    delta = end - start
+    print delta
 
 
 def main():
@@ -49,7 +52,7 @@ def main():
     """
 
     # Prepare x messages
-    X = 50000
+    X = 1000
     messages= []
     for i in range(X):
         message = random_message()
@@ -57,7 +60,7 @@ def main():
         messages.append(message)
 
     # Make multiprocessing request
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(4)
     start = datetime.now()
     pool.map(request, messages)
     pool.close()
