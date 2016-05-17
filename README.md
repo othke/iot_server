@@ -3,18 +3,10 @@
 ###################################
 
 ###################################
-# Install nginx
+# Update
 ###################################
 sudo apt-get upgrade
 sudo apt-get update
-sudo apt-get install nginx -y
-
-# start nginx
-sudo /etc/init.d/nginx start
-
-# configure nginx load balancing
-# use file nginx.conf in the directory conf_server
-# replace with the default nginx.conf in /etc/nginx
 
 ###################################
 # Install mongo
@@ -23,7 +15,17 @@ sudo /etc/init.d/nginx start
 sudo apt-get mongodb-server -y
 
 # check status
+/etc/init.d/mongodb start
 /etc/init.d/mongodb status
+
+###################################
+# Initialize mongo db
+###################################
+mongo
+use hackathon
+db.runCommand( { create: "messages"} );
+db.messages.createIndex({ id: 1 }, {unique:true});
+db.messages.dropIndex("_id_");
 
 ###################################
 # Install nodejs
@@ -48,11 +50,7 @@ npm install
 ###################################
 # Lauch nodejs node instance
 ###################################
-# Set the port corresponding to nginx load balancing
-# This operation should be repeat as long as you need a new node with differents PORT (8081, 8082, 8083, etc...)
-NODE_PORT=9000 node index.js &
-NODE_PORT=9001 node index.js &
-NODE_PORT=9002 node index.js &
-NODE_PORT=9003 node index.js &
+node cluster.js
+
 
 
