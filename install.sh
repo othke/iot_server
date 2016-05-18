@@ -21,7 +21,7 @@ sudo dpkg -i node_latest_armhf.deb
 cd ~
 mkdir hackathon
 cd hackathon
-https://github.com/othke/iot_server.git
+git clone https://github.com/othke/iot_server.git
 
 # update npm
 cd iot_server
