@@ -28,9 +28,11 @@ exports.messagesSynthesisGET = function(args, res, next) {
 	mongo_service.getSynthesis()
 	.then(function(result){
 		res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
 		res.end(result);
 	})
     .catch(function(error){
+        //console.log(error);
         res.statusCode = 500;
         res.end()
     })
