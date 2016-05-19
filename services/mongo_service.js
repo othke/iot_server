@@ -93,7 +93,7 @@ mongoService.serializeSynthesis = function(db){
                 sensorType:"$_id",
                 minValue: '$minValue',
                 maxValue: '$maxValue',
-                mediumValue: round('$mediumValue', 1)
+                mediumValue: round('$mediumValue', 2)
             } }
         ], function (err, result){
             if (err) {
