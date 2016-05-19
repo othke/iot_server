@@ -72,14 +72,13 @@ mongoService.getSynthesis = function(){
 mongoService.serializeSynthesis = function(db){
     return new Promise(function(resolve, reject){
 
-        var timeStamp = new Date().getTime();
-        var minutes = 60;
-        var timeStampDelta = new Date(timeStamp - minutes*60000);
+        var timeStamp = Date.now();                 
+        var timeStampDelta = new Date(timeStamp - 60*60*1000);
 
         db.collection('messages').aggregate([
             { $match: {
                 timestamp: {
-                    $gte: timeStampDelta
+                    $gte: new Date(mongoService.ISODate(new Date(timeStampDelta)))
                 }
             }},
             { "$group": {
@@ -103,6 +102,16 @@ mongoService.serializeSynthesis = function(db){
             }
         })
     })
+}
+
+mongoService.ISODate = function (d){
+	 function pad(n){return n<10 ? '0'+n : n}
+	 return d.getUTCFullYear()+'-'
+	      + pad(d.getUTCMonth()+1)+'-'
+	      + pad(d.getUTCDate())+'T'
+	      + pad(d.getHours())+':'
+	      + pad(d.getUTCMinutes())+':'
+	      + pad(d.getUTCSeconds())+'Z'
 }
 
 module.exports = mongoService;
