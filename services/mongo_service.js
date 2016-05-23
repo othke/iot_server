@@ -2,7 +2,6 @@
 
 var conf = require('../conf');
 var mongoDbConnection = require('../connection');
-var round = require('mongo-round');
 mongoService = {}
 
 /**
@@ -92,7 +91,7 @@ mongoService.serializeSynthesis = function(db){
                 sensorType:"$_id",
                 minValue: '$minValue',
                 maxValue: '$maxValue',
-                mediumValue: round('$mediumValue', 2)
+                mediumValue: '$mediumValue'
             } }
         ], function (err, result){
             if (err) {
